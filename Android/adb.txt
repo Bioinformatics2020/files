@@ -1,0 +1,75 @@
+::查看连接
+adb devices
+
+::远程adb连接
+adb connect 10.19.235.113:5555
+::断开连接
+adb disconnect
+
+::查看所有APP 并按字符串过滤
+adb shell pm list packages | findstr "com.hryt"
+
+::查看所有进程信息 并按字符串过滤
+adb shell "ps |grep com.hryt"
+
+::查看进程开销 传入包名或pid
+adb shell "dumpsys meminfo -s com.hryt.apps.launcher"
+::详细介绍
+meminfo dump options: [-a] [-d] [-c] [-s] [--oom] [process]
+  -a: 包括每个过程的所有可用信息。
+  -d: 包括dalvik虚拟机的细节
+  -c: dump in a compact machine-parseable representation.
+  -s: dump only summary of application memory usage.
+  -S: dump also SwapPss.
+  --oom: only show processes organized by oom adj.
+  --local: only collect details locally, don't call process.
+  --package: interpret process arg as package, dumping all
+             processes that have loaded that package.
+  --checkin: dump data for a checkin
+  --proto: dump data to proto
+[process] 指定它可以是要转储的特定进程的名称或 pid
+
+::端口映射
+adb forward tcp:9876 tcp:9876 电脑到手机
+adb reverse tcp:9876 tcp:9876 手机到电脑
+adb forward --list
+adb reverse --remove tcp:9876
+adb forward --remove-all
+
+::打开投屏
+C:\Users\Administrator\Desktop\ZXTools\scrcpy-win64-v2.0\scrcpy.exe
+
+::截图到安卓本地
+adb shell /system/bin/screencap -p /sdcard/cap.png
+
+::关闭APP
+adb shell am force-stop com.hryt.apps.launcher
+::关闭进程
+adb shell "kill -9 PID"
+::打开APP
+adb shell am start -n com.example.videoapp/.MainActivity
+
+::文件管理
+adb pull /sdcard/ue4game/nic/nic/saved/logs/NIC.log D:\hryt\UE4Logs  从设备上拉取文件
+adb shell rm /system/app/HHLauncher/a.apk 删除文件
+adb shell rm -r /system/app/HHLauncher/a  删除文件夹
+adb push C:\Users\Administrator\Downloads\HHLauncher.apk /system/app/HHLauncher/  推入文件
+
+::推包
+adb install -r -t C:\Users\Administrator\Downloads\com.hryt.apps.launcher-3.8.202308072014-20.apk
+adb uninstall com.hryt.apps.launcher
+
+::获取log
+adb logcat > ./log.txt
+adb shell ps |findstr "com.hryt.apps.ximalayamedia" >temp.txt && for /f "tokens=2" %i in (temp.txt) do (adb shell logcat *:V|findstr %i)
+
+::获取root权限
+adb root
+::获取/system目录挂载权限
+adb remount
+
+
+
+::重启
+adb reboot
+

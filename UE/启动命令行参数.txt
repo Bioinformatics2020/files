@@ -1,0 +1,1 @@
+-tracefile=/sdcard/UE4Game/foobar.utrace -trace=frame,cpu,gpu,memory
