@@ -1,1 +1,1 @@
--tracefile=/sdcard/UE4Game/foobar.utrace -trace=frame,cpu,gpu,memory
+-tracehost=127.0.0.1 -trace=frame,cpu,gpu,memory,loadtime

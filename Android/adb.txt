@@ -48,6 +48,8 @@ adb shell am force-stop com.hryt.apps.launcher
 adb shell "kill -9 PID"
 ::打开APP
 adb shell am start -n com.example.videoapp/.MainActivity
+::打开UE app
+adb shell am start com.Kotei.BJMotorShow/com.epicgames.ue4.SplashActivity
 
 ::文件管理
 adb pull /sdcard/ue4game/nic/nic/saved/logs/NIC.log D:\hryt\UE4Logs  从设备上拉取文件
@@ -68,6 +70,9 @@ adb root
 ::获取/system目录挂载权限
 adb remount
 
+::性能检测
+adb shell top
+adb shell top --help 查看帮助
 
 
 ::重启

@@ -104,6 +104,8 @@ git config --global core.autocrlf false 关闭warning: LF 报错
 git config --global --list 查看全局配置
 git config --list 查看本地配置
 git凭证，需要在windows的凭证管理器中删除旧凭证，然后重新clone代码
+git config user.name "unreal engine consumer" 当前仓库修改用户名称
+git config user.email "2252313806@qq.com" 当前仓库修改用户名称
 
 
 ### 特殊应用
@@ -128,3 +130,9 @@ git push 提交到远程仓库
 全局配置文件(~/.gitignore)
 远程配置文件($PWD/.gitignore)
 本地配置文件($PWD/.git/info/exlude)
+
+
+# git与GitHub关联
+ssh-keygen -t rsa -C "2252313806@qq.com" 生成SSH密匙
+将生成文件里的公匙配置到GitHub setting SSH keys里面
+ssh -T git@github.com 验证SSH连接

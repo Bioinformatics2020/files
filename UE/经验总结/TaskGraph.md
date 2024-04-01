@@ -35,13 +35,13 @@
 
 ## TaskThreadAnyThread的基本介绍
 
-基本特点介绍：
+**基本特点介绍：**
 
 - 继承自FTaskThreadBase：拥有单独线程或在主线程模拟单独线程
 - 用来管理匿名线程的Task执行
 - 具体执行的内容被FTaskGraphImplementation管理
 
-多线程模式运行流程如下：
+**多线程模式运行流程如下：**
 
 1. 构造函数与初始化函数：记录线程优先级、线程Id、线程TLS、FWorkerThread(线程信息管理结构体)
 2. 线程初始化：在TLS记录当前线程对应的FWorkerThread
@@ -50,16 +50,16 @@
    2. 对标准线程或高优先级线程预分配线程局部存储空间
    3. 循环执行ProcessTasks()，直到RequestQuit()为止(这里功能与ProcessTasks()内部的循环重复，怀疑是版本更迭导致的功能冗余)。
       ProcessTasks()内部是一个循环，也是直到RequestQuit()且FindWork()为空时停止。ProcessTasks逻辑如下：
-      1. 查找任务
+      1. 通过FindWork()查找任务
       2. 若未找到，随机Sleep一段时间（Shipping或Test版本无延迟），然后执行默认的Event事件
       3. 若存在任务，执行FBaseGraphTask对应的任务
       4. 循环执行以上步骤
 
-单线程模式运行流程如下：
+**单线程模式运行流程如下：**
 
 1. 执行构造函数
 2. 循环执行Tick函数，在Tick中执行ProcessTasks()，内部如下：
-   1. 查找任务
+   1. 通过FindWork()查找任务
    2. 若未找到，随机Sleep一段时间（Shipping或Test版本无延迟），并直接结束ProcessTasks()
    3. 若存在任务，执行FBaseGraphTask对应的任务，回到第一步
 
