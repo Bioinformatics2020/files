@@ -95,3 +95,20 @@ TBaseDynamicMulticastDelegate，动态多播委托，在TMulticastScriptDelegate
 
 TScriptDelegate，动态单播委托，与普通的委托类似，但是提供了额外的序列化函数。
 TMulticastScriptDelegate，动态多播委托，通过一个数组包含了多个动态单播委托。
+
+# Templates 模板
+
+​	除下方描述的几个重要模板外，还提供了多个类型萃取traits模板，少量其它特殊功能模板。
+
+**Function** 封装所有的可调用对象。[UE4异步编程专题 - TFunction - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/61368703)
+
+**Atomic** 官方的TAtomic不再维护，请使用std::atomic。[std::atomic - cppreference.com](https://zh.cppreference.com/w/cpp/atomic/atomic)
+
+**Invoke** 触发可调用对象的函数。c++17提供std::invoke。
+
+**SharedPointer** 智能指针。[UE4随笔：UE4智能指针 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/433605801)
+
+**Tuple** 元组。[深入分析虚幻源码——TTuple - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/250149211)，[std::tuple - cppreference.com](https://zh.cppreference.com/w/cpp/utility/tuple)
+
+**UniquePtr** 智能指针之一。
+

@@ -126,7 +126,7 @@ Sun Highlight Radius Curve：太阳高亮半径曲线。太阳高亮半径随太
 
 Sun_Highlight_Intensity_Curve：太阳高亮强度曲线。太阳高亮强度随太阳角度变化。
 
-Shine Intensity Curve：轮廓强度变化曲线。
+Shine Intensity Curve：云轮廓强度变化曲线。
 
 Cloud Opacity：云透明度。
 
@@ -324,7 +324,7 @@ Custom Height Fog Actor：自定义高度雾组件
 
 ### Legacy Coloring Settings 颜色设置
 
-Manually Select Sun Color：启动固定的太阳颜色。
+Manually Select Sun Color：True时启动固定的太阳颜色，False时使用颜色曲线定义的颜色。
 
 Horizon Base Color (Legacy Color Curve)：天空地平线方向颜色，随太阳高度变化。
 
@@ -332,9 +332,9 @@ Cloud Dark Color (Legacy Color Curve)：夜晚云层颜色，随太阳高度变�
 
 Cloud Light Color (Legacy Color Curve)：白天云层颜色，随太阳高度变化。
 
-Sun Color (Legacy Color Curve)：太阳颜色，随太阳高度变化。
+Sun Color (Legacy Color Curve)：少云时太阳颜色，随太阳高度变化。
 
-Sun Cloudy Color Curve：多云的太阳颜色，随太阳高度变化。
+Sun Cloudy Color Curve：多云时太阳颜色，随太阳高度变化。
 
 Zenith Base Color (Legacy Color Curve)：天空顶部方向颜色，随太阳高度变化。
 
