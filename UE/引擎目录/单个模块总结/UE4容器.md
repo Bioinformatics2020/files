@@ -1,5 +1,174 @@
 UE4为了解决c++标准库提供的容器内存分配效率不够高的问题，重载了容器，使其更适合于游戏引擎。需要注意STL的容器操作算法非常丰富，如果你期望的操作UE容器不支持，可以尝试查询一下STL。
 
+# 容器内存分配器
+
+底层调用的是GMalloc分配内存
+
+## 核心的分配器
+
+分配的空间均为连续空间
+
+### 对齐堆内存分配器
+
+template<uint32 Alignment = DEFAULT_ALIGNMENT><br/>class TAlignedHeapAllocator
+
+模板参数为内存对齐大小
+
+**容器特征TAllocatorTraits**
+
+SupportsMove    = true
+IsZeroConstruct = true
+SupportsFreezeMemoryImage = false
+
+**最大元素数量**
+
+int32上限
+
+**分配的内存特点**
+
+分配的内存起始位置会对齐到给定的对齐值Alignment 
+
+**增长/保留/收缩策略**
+
+同简单堆内存分配器
+
+### 简单堆内存分配器
+
+template <int IndexSize><br/>class TSizedHeapAllocator
+
+模板参数为最大元素数量的类型
+
+**容器特征TAllocatorTraits**
+
+SupportsMove    = true
+IsZeroConstruct = true
+SupportsFreezeMemoryImage = false
+
+**最大元素数量**
+
+int8 或int16 或int32 或int64 上限
+
+**分配的内存特点**
+
+直接调用Realloc
+
+**增长策略**
+
+除给定要求外，预留额外3/8，并向上对齐
+
+**保留策略**
+
+将当前空间向上对齐
+
+**收缩策略**
+
+ 当(剩余字节数>=16384 || 元素利用率 < 2/3) && (容器内无元素 || 剩余元素数>64)
+则收缩容器到当前容器元素向上对齐后的大小
+
+### 内联内存分配器
+
+template <uint32 NumInlineElements, typename SecondaryAllocator = FDefaultAllocator><br/>class TInlineAllocator
+
+模板参数分别为内联分配的元素数目与额外补充所使用的内存分配器(又名第二分配器)
+默认第二分配器为简单堆内存分配器
+
+**容器特征**
+
+SupportsMove    同第二分配器的SupportsMove
+IsZeroConstruct = false
+SupportsFreezeMemoryImage = false
+
+**最大元素数量**
+
+int32上限
+
+**分配的内存特点**
+
+该分配器会在构造该分配器的区域直接创建一块内存，其大小为预设数目
+
+当所分配元素小于预设元素数目时，使用预设的区域，若大于该区域，则使用第二分配器申请一块新内存容纳所有元素，并将预设空间的元素拷贝到第二分配器分配的内存
+
+**增长/保留/收缩策略**
+
+对于内联的空间则忽略，否则同第二内存分配器
+
+### 不可浮动的内联内存分配器
+
+template <uint32 NumInlineElements>
+class TNonRelocatableInlineAllocator
+
+模板参数为内联分配的元素数目
+
+**容器特征**
+
+SupportsMove = true
+IsZeroConstruct = false
+SupportsFreezeMemoryImage = false
+
+**最大元素数量**
+
+int32上限
+
+**分配的内存特点**
+
+分配过程类似于内联分配器，但是当元素数量超过预设时，不使用第二分配器，而是直接Malloc，相比内联内存分配器的优势在于，在调用GetAllocation()这个常用函数时，函数实现不必使用if判断，加快获取内存地址的过程
+
+**增长/保留/收缩策略**
+
+对于内联的空间则忽略，否则同简单堆内存分配器
+
+### 固定内存分配器
+
+template <uint32 NumInlineElements>
+class TFixedAllocator
+
+模板参数为内联分配的元素数目
+
+**容器特征**
+
+SupportsMove = true
+IsZeroConstruct = false
+SupportsFreezeMemoryImage = false
+
+**最大元素数量**
+
+int32上限
+
+**分配的内存特点**
+
+类似内联分配器，但是不提供第二分配器，使用者必须保证分配的大小小于预设大小
+
+**增长/保留/收缩策略**
+
+忽略变化
+
+## 扩展的内存分配器
+
+由核心分配器组成的，更适用于特定容器的内存分配器
+
+### SparseArray内存分配器
+
+template<typename InElementAllocator = FDefaultAllocator,typename InBitArrayAllocator = FDefaultBitArrayAllocator>
+class TSparseArrayAllocator
+
+默认模板参数分别为简单堆内存分配器<32>，内联内存分配器<4>
+
+该分配器由两个分配器组成，即为模板参数所示的两个分配器
+
+### Set内存分配器
+
+template<
+	typename InSparseArrayAllocator               = TSparseArrayAllocator<>,
+	typename InHashAllocator                      = TInlineAllocator<1,FDefaultAllocator>,
+	uint32   AverageNumberOfElementsPerHashBucket = DEFAULT_NUMBER_OF_ELEMENTS_PER_HASH_BUCKET,
+	uint32   BaseNumberOfHashBuckets              = DEFAULT_BASE_NUMBER_OF_HASH_BUCKETS,
+	uint32   MinNumberOfHashedElements            = DEFAULT_MIN_NUMBER_OF_HASHED_ELEMENTS>
+class TSetAllocator
+
+模板参数为两个内存分配器，哈希桶最大平均元素数量，哈希桶元素数量基数，最小总元素数量(小于此值将不分桶)
+
+提供一个函数，根据桶元素数量，桶平均元素数量，返回需要的哈希桶的数量。
+
 # 基础的顺序存储容器
 
 ## TArray
@@ -578,7 +747,7 @@ class TSet
 
 **内存布局**
 
-容器由一个哈希桶构成：使用一块空间保存每个桶节点的索引，每个桶节点使用链表存储与扩增元素。
+容器由一个哈希桶构成：使用一块空间保存每个桶节点的索引，每个桶节点内部使用链表存储与扩增元素。
 
 其中链表节点为TSetElement类型，桶节点的索引为FSetElementId类型。
 
@@ -993,187 +1162,24 @@ struct TDefaultMapHashableKeyFuncs : TDefaultMapKeyFuncs<KeyType, ValueType, bIn
 
 ## List
 
-### TList
+**TList：**最简单的链表节点，由元素与指向下一元素的指针构成，未提供任何操作
 
-最简单的链表节点，由元素与指向下一元素的指针构成，未提供任何操作
+**TLinkedListIterator** 拥有单项遍历方法、前后节点查询修改方法的双向链表，未提供其它操作
 
-### TLinkedListIterator
+**TDoubleLinkedList** 支持多种遍历查询修改操作的双向链表。包含链表头尾节点指针、链表大小属性。
 
-拥有单项遍历方法、前后节点查询修改方法的双向链表，未提供其它操作
+# 某些领域专用的容器
 
-### TDoubleLinkedList
+### ArrayView
 
-支持多种遍历查询修改操作的双向链表。包含链表头尾节点指针、链表大小属性。
+保存的数组的某一处地址，以及从这个地址开始之后的长度。对于一个大型数组，但只对其中一部分进行操作时比较适用。
 
+### HashTable 
 
+为其它容器提供Hash索引的辅助容器
 
-# 容器内存分配器
+**TStaticHashTable**：静态分配的hash表，为其它数据结构实现索引查找。要求Value不重复(例如递增)，实现任意一个hash健都有唯一一个Value对应，再通过Value作为下标或索引查找另一个容器的元素。通过这种非常简化的流程实现了高效且基本的Hash表查找功能。存在Hash冲突时采用链式存储。
 
-底层调用的是GMalloc分配内存
+**FHashTable**：功能同TStaticHashTable，但是Hash表本身为动态分配、动态扩容。使用FMemory::Memset与FMemory::Memcpy等方法实现内存分配。
 
-## 核心的分配器
-
-分配的空间均为连续空间
-
-### 对齐堆内存分配器
-
-template<uint32 Alignment = DEFAULT_ALIGNMENT><br/>class TAlignedHeapAllocator
-
-模板参数为内存对齐大小
-
-**容器特征TAllocatorTraits**
-
-SupportsMove    = true
-IsZeroConstruct = true
-SupportsFreezeMemoryImage = false
-
-**最大元素数量**
-
-int32上限
-
-**分配的内存特点**
-
-分配的内存起始位置会对齐到给定的对齐值Alignment 
-
-**增长/保留/收缩策略**
-
-同简单堆内存分配器
-
-### 简单堆内存分配器
-
-template <int IndexSize><br/>class TSizedHeapAllocator
-
-模板参数为最大元素数量的类型
-
-**容器特征TAllocatorTraits**
-
-SupportsMove    = true
-IsZeroConstruct = true
-SupportsFreezeMemoryImage = false
-
-**最大元素数量**
-
-int8 或int16 或int32 或int64 上限
-
-**分配的内存特点**
-
-直接调用Realloc
-
-**增长策略**
-
-除给定要求外，预留额外3/8，并向上对齐
-
-**保留策略**
-
-将当前空间向上对齐
-
-**收缩策略**
-
- 当(剩余字节数>=16384 || 元素利用率 < 2/3) && (容器内无元素 || 剩余元素数>64)
-则收缩容器到当前容器元素向上对齐后的大小
-
-### 内联内存分配器
-
-template <uint32 NumInlineElements, typename SecondaryAllocator = FDefaultAllocator><br/>class TInlineAllocator
-
-模板参数分别为内联分配的元素数目与额外补充所使用的内存分配器(又名第二分配器)
-默认第二分配器为简单堆内存分配器
-
-**容器特征**
-
-SupportsMove    同第二分配器的SupportsMove
-IsZeroConstruct = false
-SupportsFreezeMemoryImage = false
-
-**最大元素数量**
-
-int32上限
-
-**分配的内存特点**
-
-该分配器会在构造该分配器的区域直接创建一块内存，其大小为预设数目
-
-当所分配元素小于预设元素数目时，使用预设的区域，若大于该区域，则使用第二分配器申请一块新内存容纳所有元素，并将预设空间的元素拷贝到第二分配器分配的内存
-
-**增长/保留/收缩策略**
-
-对于内联的空间则忽略，否则同第二内存分配器
-
-### 不可浮动的内联内存分配器
-
-template <uint32 NumInlineElements>
-class TNonRelocatableInlineAllocator
-
-模板参数为内联分配的元素数目
-
-**容器特征**
-
-SupportsMove = true
-IsZeroConstruct = false
-SupportsFreezeMemoryImage = false
-
-**最大元素数量**
-
-int32上限
-
-**分配的内存特点**
-
-分配过程类似于内联分配器，但是当元素数量超过预设时，不使用第二分配器，而是直接Malloc，相比内联内存分配器的优势在于，在调用GetAllocation()这个常用函数时，函数实现不必使用if判断，加快获取内存地址的过程
-
-**增长/保留/收缩策略**
-
-对于内联的空间则忽略，否则同简单堆内存分配器
-
-### 固定内存分配器
-
-template <uint32 NumInlineElements>
-class TFixedAllocator
-
-模板参数为内联分配的元素数目
-
-**容器特征**
-
-SupportsMove = true
-IsZeroConstruct = false
-SupportsFreezeMemoryImage = false
-
-**最大元素数量**
-
-int32上限
-
-**分配的内存特点**
-
-类似内联分配器，但是不提供第二分配器，使用者必须保证分配的大小小于预设大小
-
-**增长/保留/收缩策略**
-
-忽略变化
-
-## 扩展的内存分配器
-
-由核心分配器组成的，更适用于特定容器的内存分配器
-
-### SparseArray内存分配器
-
-template<typename InElementAllocator = FDefaultAllocator,typename InBitArrayAllocator = FDefaultBitArrayAllocator>
-class TSparseArrayAllocator
-
-默认模板参数分别为简单堆内存分配器<32>，内联内存分配器<4>
-
-该分配器由两个分配器组成，即为模板参数所示的两个分配器
-
-### Set内存分配器
-
-template<
-	typename InSparseArrayAllocator               = TSparseArrayAllocator<>,
-	typename InHashAllocator                      = TInlineAllocator<1,FDefaultAllocator>,
-	uint32   AverageNumberOfElementsPerHashBucket = DEFAULT_NUMBER_OF_ELEMENTS_PER_HASH_BUCKET,
-	uint32   BaseNumberOfHashBuckets              = DEFAULT_BASE_NUMBER_OF_HASH_BUCKETS,
-	uint32   MinNumberOfHashedElements            = DEFAULT_MIN_NUMBER_OF_HASHED_ELEMENTS
-
-	>
-class TSetAllocator
-
-模板参数分别为如模板参数所示的两个内存分配器，哈希桶最大平均元素数量，哈希桶元素数量基数，最小总元素数量(小于此值将不分桶)
-
-提供一个函数，根据桶元素数量，桶平均元素数量，返回需要的哈希桶的数量
+**THashTable**：功能同FHashTable，但是使用自定义的内存分配器。

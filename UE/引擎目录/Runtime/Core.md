@@ -58,6 +58,12 @@
 
 **Transform** 转换。将数据从一个容器移动到另一个容器
 
+# Containers 容器
+
+参考“UE4容器”文章
+
+**Ticker** Tick执行工具，在FEngineLoop::Tick()里执行Tick操作，便于简单自由的添加定时操作。
+
 # Delegates 委托
 
 **Delegate** 包含了委托系统基本的说明书；定义了实例化委托类的宏，这里的宏表示了委托本质是什么类；通过宏封装了动态委托的声明与实现，以及一些基本的绑定与触发函数。
@@ -95,6 +101,34 @@ TBaseDynamicMulticastDelegate，动态多播委托，在TMulticastScriptDelegate
 
 TScriptDelegate，动态单播委托，与普通的委托类似，但是提供了额外的序列化函数。
 TMulticastScriptDelegate，动态多播委托，通过一个数组包含了多个动态单播委托。
+
+# Logging 日志
+
+**IMessageLog** 基于原始的FMsg::Logf方法，封装了类似于UE_LOG的另一套log输出方法，期望用于包含丰富标记信息的log，例如颜色、大量标签、按页分类等。
+
+**LogCategory** 用于UE_LOG中对log添加标签以及定义log级别，以及将log标签添加到FLogSuppressionInterface进行管理。通过DECLARE_LOG_CATEGORY_EXTERN等宏来继承FLogCategory完成新log分类的定义。
+
+**LogMacros** 定义了输出Log相关的多个宏，提供最简单的log输出、分类标签定义、出现Fatal级别log时的堆栈与崩溃、调试时针对指定log的断点等等。
+
+**LogScopedCategoryAndVerbosityOverride** 在TLS中保存log分类与级别。只在UE_SUPPRESS时保存，离开后恢复，只在FOutputDevice用到。不确定使用这个东西的意义是什么。
+
+**LogScopedVerbosityOverride** 用于动态修改日志显示级别，封装成了一个宏，离开作用域时恢复log级别。在某些情况下可能期望出现更详细或更简略的log内容，引擎中有少量地方使用到。
+
+**LogSuppressionInterface** 根据命令行、配置文件管理每个类别的Log开关与输出级别。
+
+**LogVerbosity** 定义log输出级别从无Log到崩溃Log共7级，输出设备会根据Log级别来添加颜色与过滤。
+
+# Math 数学
+
+**Color** 提供了颜色的基础表示、转换、计算方法，如FLinearColor转FColor、去饱和度、RGB转sRGB等。
+
+# Misc 杂项
+
+**Guid** 封装了Guid的各种格式转换方法以及Guid的生成方法。
+
+**LazySingleton** 懒惰的单例，用于期望静态分配内存但是动态构造的单例类管理方法。文件内部提供了示例方法。
+
+**VarargsHelper** 封装了可变参数列表解析的方法，将可变参数列表按照字符串Fmt的格式解析到字符串Buffer中，并执行传入的代码片段(需要在这里使用解析完成的Buffer)，执行完成之后自动销毁Buffer。
 
 # Templates 模板
 

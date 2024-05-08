@@ -2,6 +2,9 @@ UFactory 决定内容浏览器创建对象的方法
 
 控制台命令
 r.tonemapperfilm 0 //调整自发光
+r.SetRes 600x800w //调整分辨率，设置为窗口模式
+r.SetRes 600x800f //调整分辨率，设置为全屏模式
+r.SetRes 600x800  //调整分辨率，不修改显示模式
 
 后处理体积
 可以修改自发光效果
@@ -15,6 +18,9 @@ Open JDK进程需要杀掉
 删除Intermediate\Android\armv7\gradle目录下部分临时文件
 删除Intermediate\Android\armv7\gradle\app\build\outputs\apk\debug\output.json
 
+打包
+蓝图的打包按钮不只是调用RunUAT.bat这么简单，它会提前编译许多依赖项
+
 
 
 
@@ -25,3 +31,7 @@ CameraVector：normalize(采样点-摄像机坐标)
 默认材质函数
 CameraDepthFade：返回采样点到摄像机的距离，近到远为0-1
 CheckerPattern：将物体分割为多个瓷砖块
+
+
+
+模型渲染的起点可以参考FPrimitiveSceneProxy

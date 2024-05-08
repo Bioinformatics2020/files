@@ -1,0 +1,12 @@
+# Component
+
+**WidgetComponent**：用于在3D场景中显示UI。为UMeshComponent类型。可选在屏幕空间或3D空间绘制UI。
+
+屏幕空间模式：将Widget添加到SWorldWidgetScreenLayer，由其管理Widget每帧的位置以及内容更新。将SWorldWidgetScreenLayer添加到SGameLayerManager，SGameLayerManager属于SViewport。
+
+3D空间模式：定时执行通过FWidgetRenderer将Widget渲染到RenderTarget。在首次创建RenderTarget时其传递给FWidget3DSceneProxy对应面片的材质。
+
+# Slate
+
+**WidgetRenderer**：用于渲染Widget到FRenderTarget。封装了FSlateRenderer的AddWidgetRendererUpdate函数，直接调用DrawWindow即可。参考UWidgetComponent与SRetainerWidget使用。
+
