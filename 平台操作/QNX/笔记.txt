@@ -1,0 +1,57 @@
+连接设备
+adb root
+adb shell
+ssh 192.168.1.1
+yes
+a2zZtoA
+cd /nfs_share/MultiScreen2
+
+pidin 查看正在运行的进程
+slay -9 cluster_hmi 关闭默认launcher进程
+slay -P 63 VehicleVarietyPack.elf 调整进程优先级
+
+screenshot -display=1 -file=1.bmp [-size=widthxheight] 截屏
+
+top 查看线程占用
+hogs 查看进程占用
+
+sysprofiler_app --cpu --gpu --adsp --cdsp --io --mem --sample-time 3000 --total-time 10 性能统计到文件
+sysprofiler_app --gpu --sample-time 1000 --total-time 10 --file=1 性能统计到文件
+showmem 查看内存信息
+
+chmod 777 * 修改文件权限 
+./ChunkDownloaderDemo.elf 执行程序
+
+
+在DefaultEngine.ini指定显示屏幕
+[/Script/QNXRuntimeSettings.QNXRuntimeSettings]
+WindowDisplay=1
+理论上也可以通过WindowDisplay=1命令行参数指定。
+
+
+创建多个窗口
+启动时执行：
+UQNXDisplayManagerBPLibrary::CreateDisplaySurface()
+UQNXDisplayManagerBPLibrary::AssignDisplaySurface()
+
+更新时执行:
+UQNXDisplayManagerBPLibrary::TickSurfaces()
+UQNXDisplayManagerBPLibrary::RenderWidgetToRenderTarget()
+
+
+
+slay -9 VehicleVarietyPack.elf
+
+slay -9 qvm
+sysprofiler_app --gpu --sample-time 2000 --total-time 30 --file=1 &
+
+./VehicleVarietyPack.elf -tracefile=/nfs_share/MultiScreen4/QNX/temp/1.utrace -trace=frame,cpu,gpu,memory,loadtime -statnamedevents -windowdisplay=1 -ExecCmds="t.MaxFPS 30" -loadmap=0
+
+
+slay -9 VehicleVarietyPack.elf
+
+slay -9 qvm
+sysprofiler_app --gpu --sample-time 2000 --total-time 40 --file=2 &
+
+./VehicleVarietyPack.elf -tracefile=/nfs_share/MultiScreen4/QNX/temp/2.utrace -trace=frame,cpu,gpu,memory,loadtime -statnamedevents -windowdisplay=1 -ExecCmds="t.MaxFPS 30" -loadmap=1
+

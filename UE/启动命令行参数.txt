@@ -1,7 +1,28 @@
-//远程连接Unreal Insight
--tracehost=127.0.0.1 -trace=frame,cpu,gpu,memory,loadtime
+# Unreal Insighttr
+## 
+-tracehost=127.0.0.1 连接网络端口
+-tracefile=d:/foo/bar.utrace 保存到本地
+
+-statnamedevents 提供更详细的CPU埋点
+
+-trace=frame,cpu,gpu,memory,loadtime,slate(需要开启Slate Insights插件)
+
+//举例
+-tracehost=127.0.0.1 -trace=frame,cpu,gpu,memory -statnamedevents -game
 
 //启动log面板
 -log 
 //窗口模式运行，指定窗口大小
 -ResX=400 -ResY=300 -windowed
+
+//传入控制台参数
+-ExecCmds="t.MaxFPS 30,stat fps" 使用","分割命令，其它用法参考以下源码
+多个控制台参数可以使用文件传递 参考Engine/Source/Runtime/Engine/Private/UnrealEngine.cpp 1652
+
+
+控制台命令
+r.tonemapperfilm 0 //调整自发光
+r.SetRes 600x800w //调整分辨率，设置为窗口模式
+r.SetRes 600x800f //调整分辨率，设置为全屏模式
+r.SetRes 600x800  //调整分辨率，不修改显示模式
+t.MaxFPS 200 设置最大帧率
