@@ -26,7 +26,7 @@ chmod 777 * 修改文件权限
 在DefaultEngine.ini指定显示屏幕
 [/Script/QNXRuntimeSettings.QNXRuntimeSettings]
 WindowDisplay=1
-理论上也可以通过WindowDisplay=1命令行参数指定。
+可以通过-WindowDisplay=1命令行参数指定。
 
 
 创建多个窗口
@@ -42,16 +42,68 @@ UQNXDisplayManagerBPLibrary::RenderWidgetToRenderTarget()
 
 slay -9 VehicleVarietyPack.elf
 
+一拖三 仪表+HUD+中控
 slay -9 qvm
-sysprofiler_app --gpu --sample-time 2000 --total-time 30 --file=1 &
+sysprofiler_app --cpu --gpu --io --mem --sample-time 2000 --total-time 50 --file=1 &
+hogs >> Results_sysprofiler/hogs1.txt &
+./VehicleVarietyPack.elf -tracefile=/nfs_share/MultiScreen/QNX/Results_sysprofiler/1.utrace -trace=frame,cpu,gpu,memory,loadtime -statnamedevents -windowdisplay=1 -ExecCmds="t.MaxFPS 30" -loadmap=0
 
-./VehicleVarietyPack.elf -tracefile=/nfs_share/MultiScreen4/QNX/temp/1.utrace -trace=frame,cpu,gpu,memory,loadtime -statnamedevents -windowdisplay=1 -ExecCmds="t.MaxFPS 30" -loadmap=0
+
+单进程 仪表
+slay -9 qvm
+sysprofiler_app --cpu --gpu --io --mem --sample-time 2000 --total-time 50 --file=2_1 &
+hogs >> Results_sysprofiler/hogs2_1.txt &
+./VehicleVarietyPack.elf -tracefile=/nfs_share/MultiScreen/QNX/Results_sysprofiler/2_1.utrace -trace=frame,cpu,gpu,memory,loadtime -statnamedevents -windowdisplay=1 -ExecCmds="t.MaxFPS 30" -loadmap=1
+
+单进程 HUD
+slay -9 qvm
+sysprofiler_app --cpu --gpu --io --mem --sample-time 2000 --total-time 50 --file=2_2 &
+hogs >> Results_sysprofiler/hogs2_2.txt &
+./VehicleVarietyPack.elf -tracefile=/nfs_share/MultiScreen/QNX/Results_sysprofiler/2_2.utrace -trace=frame,cpu,gpu,memory,loadtime -statnamedevents -windowdisplay=2 -ExecCmds="t.MaxFPS 30" -loadmap=2
+
+单进程 中控
+slay -9 qvm
+sysprofiler_app --cpu --gpu --io --mem --sample-time 2000 --total-time 50 --file=2_3 &
+hogs >> Results_sysprofiler/hogs2_3.txt &
+./VehicleVarietyPack.elf -tracefile=/nfs_share/MultiScreen/QNX/Results_sysprofiler/2_3.utrace -trace=frame,cpu,gpu,memory,loadtime -statnamedevents -windowdisplay=3 -ExecCmds="t.MaxFPS 30" -loadmap=3
+
+三个进程 仪表+HUD+中控
+slay -9 qvm
+sysprofiler_app --cpu --gpu --io --mem --sample-time 2000 --total-time 50 --file=3 &
+hogs >> Results_sysprofiler/hogs3.txt &
+./VehicleVarietyPack.elf -tracefile=/nfs_share/MultiScreen/QNX/Results_sysprofiler/3.utrace -trace=frame,cpu,gpu,memory,loadtime -statnamedevents -windowdisplay=1 -ExecCmds="t.MaxFPS 30" -loadmap=1 &
+./VehicleVarietyPack.elf -windowdisplay=2 -ExecCmds="t.MaxFPS 30" -loadmap=2 &
+./VehicleVarietyPack.elf -windowdisplay=3 -ExecCmds="t.MaxFPS 30" -loadmap=3 
+
+二个进程 仪表+HUD
+slay -9 qvm
+sysprofiler_app --cpu --gpu --io --mem --sample-time 2000 --total-time 50 --file=4_1 &
+hogs >> Results_sysprofiler/hogs4_1.txt &
+./VehicleVarietyPack.elf -tracefile=/nfs_share/MultiScreen/QNX/Results_sysprofiler/4_1.utrace -trace=frame,cpu,gpu,memory,loadtime -statnamedevents -windowdisplay=1 -ExecCmds="t.MaxFPS 30" -loadmap=1 &
+./VehicleVarietyPack.elf -windowdisplay=2 -ExecCmds="t.MaxFPS 30" -loadmap=2 
+
+二个进程 仪表+中控
+slay -9 qvm
+sysprofiler_app --cpu --gpu --io --mem --sample-time 2000 --total-time 50 --file=4_2 &
+hogs >> Results_sysprofiler/hogs4_2.txt &
+./VehicleVarietyPack.elf -tracefile=/nfs_share/MultiScreen/QNX/Results_sysprofiler/4_2.utrace -trace=frame,cpu,gpu,memory,loadtime -statnamedevents -windowdisplay=1 -ExecCmds="t.MaxFPS 30" -loadmap=1 &
+./VehicleVarietyPack.elf -windowdisplay=3 -ExecCmds="t.MaxFPS 30" -loadmap=3
+
+一拖二 仪表+HUD
+slay -9 qvm
+sysprofiler_app --cpu --gpu --io --mem --sample-time 2000 --total-time 50 --file=5_1 &
+hogs >> Results_sysprofiler/hogs5_1.txt &
+./VehicleVarietyPack.elf -tracefile=/nfs_share/MultiScreen/QNX/Results_sysprofiler/5_1.utrace -trace=frame,cpu,gpu,memory,loadtime -statnamedevents -windowdisplay=1 -ExecCmds="t.MaxFPS 30" -loadmap=7
+
+一拖二 仪表+中控
+slay -9 qvm
+sysprofiler_app --cpu --gpu --io --mem --sample-time 2000 --total-time 50 --file=5_2 &
+hogs >> Results_sysprofiler/hogs5_2.txt &
+./VehicleVarietyPack.elf -tracefile=/nfs_share/MultiScreen/QNX/Results_sysprofiler/5_2.utrace -trace=frame,cpu,gpu,memory,loadtime -statnamedevents -windowdisplay=1 -ExecCmds="t.MaxFPS 30" -loadmap=8
 
 
 slay -9 VehicleVarietyPack.elf
 
-slay -9 qvm
-sysprofiler_app --gpu --sample-time 2000 --total-time 40 --file=2 &
 
-./VehicleVarietyPack.elf -tracefile=/nfs_share/MultiScreen4/QNX/temp/2.utrace -trace=frame,cpu,gpu,memory,loadtime -statnamedevents -windowdisplay=1 -ExecCmds="t.MaxFPS 30" -loadmap=1
-
+草稿
+./VehicleVarietyPack.elf -tracefile=/nfs_share/MultiScreen/QNX/temp/a.utrace -trace=memory implies -llm -windowdisplay=1 -ExecCmds="t.MaxFPS 30" -loadmap=0

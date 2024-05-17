@@ -12,3 +12,5 @@ D:\UE_4.27\4.27.2-release\Engine\Binaries\DotNET\AutomationToolLauncher.exe -Scr
 编辑器打包按钮代码详见：
 Engine/Source/Editor/MainFrame/Private/Frame/MainFrameActions.h 200
 	static void PackageProject( const FName InPlatformInfoName );
+	
+"D:/QNX/Engine/Build/BatchFiles/RunUAT.bat" -ScriptsForProject="D:/QNX/HMI/VehicleVarietyPack/VehicleVarietyPack.uproject" BuildCookRun -nocompileeditor -nop4 -project="D:/QNX/HMI/VehicleVarietyPack/VehicleVarietyPack.uproject" -cook -stage -archive -archivedirectory="D:/QNX/HMI/VehicleVarietyPack" -package -ue4exe="D:\QNX\Engine\Binaries\Win64\UE4Editor-Cmd.exe"  -compressed -ddc=DerivedDataBackendGraph -pak -prereqs -nodebuginfo -targetplatform=QNX -build -target=VehicleVarietyPack -clientconfig=Development -utf8output

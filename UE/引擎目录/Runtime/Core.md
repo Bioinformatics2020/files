@@ -102,6 +102,12 @@ TBaseDynamicMulticastDelegate，动态多播委托，在TMulticastScriptDelegate
 TScriptDelegate，动态单播委托，与普通的委托类似，但是提供了额外的序列化函数。
 TMulticastScriptDelegate，动态多播委托，通过一个数组包含了多个动态单播委托。
 
+# Hash
+
+**CityHash** google开发的一套非常高效的Hash算法。
+
+**xxHash** 针对小数据集速度更快的Hash算法。引擎中目前未使用。
+
 # Logging 日志
 
 **IMessageLog** 基于原始的FMsg::Logf方法，封装了类似于UE_LOG的另一套log输出方法，期望用于包含丰富标记信息的log，例如颜色、大量标签、按页分类等。
@@ -122,11 +128,19 @@ TMulticastScriptDelegate，动态多播委托，通过一个数组包含了多�
 
 **Color** 提供了颜色的基础表示、转换、计算方法，如FLinearColor转FColor、去饱和度、RGB转sRGB等。
 
+# Memory
+
+**MemoryArena** 一套内存缓存策略，应该已经废弃了，只保留了一层壳，FMemory中包含更完善的分配策略。
+
+**MemPro** 一套内存分析工具，通过在代码中重载内存分配函数并与MemPro程序配合使用。
+
 # Misc 杂项
 
 **Guid** 封装了Guid的各种格式转换方法以及Guid的生成方法。
 
 **LazySingleton** 懒惰的单例，用于期望静态分配内存但是动态构造的单例类管理方法。文件内部提供了示例方法。
+
+**Parse** 一个简易的命令行解析工具类，在字符串中查找指定的选项，返回选项是否找到以及选项对应的值。
 
 **VarargsHelper** 封装了可变参数列表解析的方法，将可变参数列表按照字符串Fmt的格式解析到字符串Buffer中，并执行传入的代码片段(需要在这里使用解析完成的Buffer)，执行完成之后自动销毁Buffer。
 
