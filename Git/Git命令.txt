@@ -137,6 +137,10 @@ git status 检查工作树状态
 git pull --rebase 在本地完成分支合并，避免仓库上多条分支线
 git push 提交到远程仓库
 
+# 子项目
+git submodule add https://xxx/gittest.git src/gittest 添加子项目
+git submodule update --init --recursive 下载子项目
+
 
 # 忽略文件
 全局配置文件(~/.gitignore)
