@@ -9,6 +9,9 @@ cd /nfs_share/MultiScreen2
 pidin 查看正在运行的进程
 slay -9 cluster_hmi 关闭默认launcher进程
 slay -P 63 VehicleVarietyPack.elf 调整进程优先级
+sync 同步硬盘空间
+du/df 查看硬盘信息
+
 
 screenshot -display=1 -file=1.bmp [-size=widthxheight] 截屏
 
@@ -106,4 +109,8 @@ slay -9 VehicleVarietyPack.elf
 
 
 草稿
-./VehicleVarietyPack.elf -tracefile=/nfs_share/MultiScreen/QNX/temp/a.utrace -trace=memory implies -llm -windowdisplay=1 -ExecCmds="t.MaxFPS 30" -loadmap=0
+sysprofiler_app --cpu --gpu --io --mem --sample-time 200 --total-time 5
+slay -9 qvm
+slay -9 QNX_Receiver-QNX-Shipping.elf
+slay -9 QNX_Sender.elf
+slay -9 QNX_Receiver.elf

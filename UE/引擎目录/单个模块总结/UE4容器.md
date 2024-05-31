@@ -1183,3 +1183,6 @@ struct TDefaultMapHashableKeyFuncs : TDefaultMapKeyFuncs<KeyType, ValueType, bIn
 **FHashTable**：功能同TStaticHashTable，但是Hash表本身为动态分配、动态扩容。使用FMemory::Memset与FMemory::Memcpy等方法实现内存分配。
 
 **THashTable**：功能同FHashTable，但是使用自定义的内存分配器。
+
+**UnrealString** 本质就是一个TArray<TChar>，但是封装了很多方便的字符操作方法。
+
