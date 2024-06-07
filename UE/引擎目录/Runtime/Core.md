@@ -108,6 +108,8 @@ TMulticastScriptDelegate，动态多播委托，通过一个数组包含了多�
 
 **xxHash** 针对小数据集速度更快的Hash算法。引擎中目前未使用。
 
+# Internationalization 国际化
+
 # Logging 日志
 
 **IMessageLog** 基于原始的FMsg::Logf方法，封装了类似于UE_LOG的另一套log输出方法，期望用于包含丰富标记信息的log，例如颜色、大量标签、按页分类等。
@@ -181,6 +183,8 @@ TMulticastScriptDelegate，动态多播委托，通过一个数组包含了多�
 **Atomic** 官方的TAtomic不再维护，请使用std::atomic。[std::atomic - cppreference.com](https://zh.cppreference.com/w/cpp/atomic/atomic)
 
 **Invoke** 触发可调用对象的函数。c++17提供std::invoke。
+
+**RemoveCV** 移除类型的const与volatile属性。
 
 **SharedPointer** 智能指针。[UE4随笔：UE4智能指针 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/433605801)
 
