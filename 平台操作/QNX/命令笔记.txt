@@ -6,12 +6,13 @@ yes
 a2zZtoA
 cd /nfs_share/MultiScreen2
 
+
+QNX命令
 pidin 查看正在运行的进程
 slay -9 cluster_hmi 关闭默认launcher进程
 slay -P 63 VehicleVarietyPack.elf 调整进程优先级
 sync 同步硬盘空间
 du/df 查看硬盘信息
-
 
 screenshot -display=1 -file=1.bmp [-size=widthxheight] 截屏
 
@@ -25,6 +26,12 @@ showmem 查看内存信息
 chmod 777 * 修改文件权限 
 ./ChunkDownloaderDemo.elf 执行程序
 
+cat win-9 | grep pipeline 查看指定窗口的pipeline
+screencmd setiv win-9 pipeline 5 设置窗口使用指定的pipeline
+/dev/screen/ 记录了进程的窗口信息
+/ifs/lib64/graphics.conf 记录了屏幕与对应的pipeline信息
+find / -name *.conf 查找所有的conf文件
+
 
 在DefaultEngine.ini指定显示屏幕
 [/Script/QNXRuntimeSettings.QNXRuntimeSettings]
@@ -32,7 +39,7 @@ WindowDisplay=1
 可以通过-WindowDisplay=1命令行参数指定。
 
 
-创建多个窗口
+创建多个窗口函数
 启动时执行：
 UQNXDisplayManagerBPLibrary::CreateDisplaySurface()
 UQNXDisplayManagerBPLibrary::AssignDisplaySurface()
@@ -42,7 +49,7 @@ UQNXDisplayManagerBPLibrary::TickSurfaces()
 UQNXDisplayManagerBPLibrary::RenderWidgetToRenderTarget()
 
 
-
+测试命令
 slay -9 VehicleVarietyPack.elf
 
 一拖三 仪表+HUD+中控
