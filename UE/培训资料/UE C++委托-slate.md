@@ -132,6 +132,7 @@ TMulticastScriptDelegate，动态多播委托，通过一个数组包含了多�
 - 演示自定义图形绘制
 - 演示贝塞尔曲线绘制
 - 演示布局控件 -- 水平框嵌套自定义图形
+- 将Demo工程导入Root\Engine\Source\Programs\，然后重新运行Root\GenerateProjectFiles.bat
 
 ### Slate输入响应功能
 
@@ -163,7 +164,7 @@ TMulticastScriptDelegate，动态多播委托，通过一个数组包含了多�
 
    查看当前鼠标是否被捕获于某一个控件(参考`FReply::Handled().CaptureMouse(AsShared())`、焦点控制系统)
 
-5. 若鼠标被控件捕获
+5. 若鼠标被控件捕获，则直接转发事件到子控件
 
    获取到被捕获控件的路径
 
@@ -175,7 +176,7 @@ TMulticastScriptDelegate，动态多播委托，通过一个数组包含了多�
 
    若`OnPreviewMouseButtonDown`函数执行完毕后依然为FReply::Unhandled()状态，则重复上一步逻辑，但是在Lambda中传入`OnMouseButtonDown`或`OnTouchStarted`函数。
 
-6. 若鼠标未被控件捕获
+6. 若鼠标未被控件捕获，则按照UE定义的规则一层层处理事件
 
    查找鼠标位置对应的控件。
 
