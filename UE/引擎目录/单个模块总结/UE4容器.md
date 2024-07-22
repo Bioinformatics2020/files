@@ -155,6 +155,8 @@ class TSparseArrayAllocator
 
 该分配器由两个分配器组成，即为模板参数所示的两个分配器
 
+工作原理参考下方[TSparseArray](#TSparseArray)
+
 ### Set内存分配器
 
 template<

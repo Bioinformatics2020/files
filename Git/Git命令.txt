@@ -82,7 +82,7 @@ git clean 参数
 	-x 也删除被忽略的文档
 	-X 仅删除被忽略的文档
 git clean -df 	返回到某个节点，（未跟踪文件的删除）
-git clean -nxdf （查看要删除的文件及目录，确认无误后再使用下面的命令进行删除）
+git clean -nxdf （查看要删除的文件及目录，确认无误后再使用上面的命令进行删除）
 
 # git status - 显示工作树状态
 git status 工作树状态

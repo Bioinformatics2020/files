@@ -1,9 +1,9 @@
 ## 技术关键点
 
 1. 命名线程与匿名线程分开处理
-2. 单线程程序也能模拟出多线程的效果
+2. 单线程程序任务依次执行也能模拟出多线程的效果
 
-## FTaskGraph创建
+## FTaskGraph创建流程
 
 通过引擎启动阶段(FEngineLoop::PreInitPreStartupScreen)的FTaskGraphInterface::Startup函数完成创建与初始化
 

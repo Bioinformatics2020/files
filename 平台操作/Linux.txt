@@ -1,0 +1,3 @@
+nm命令：查看符号表https://blog.csdn.net/lgfun/article/details/103600880
+readelf：查看elf文件基本信息，包括依赖库https://tool.lu/command/detail.html?name=readelf
+LD_DEBUG环境变量：可以让动态链接器在运行时输出详细的加载信息，包括尝试加载的库的名称、路径以及成功或失败的信息。
