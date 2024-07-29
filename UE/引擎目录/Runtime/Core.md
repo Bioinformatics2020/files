@@ -1,4 +1,4 @@
-# Algo 算法(algorithm)
+## Algo 算法(algorithm)
 
 **Accumulate** 累加。对容器进行累加	
 
@@ -58,13 +58,13 @@
 
 **Transform** 转换。将数据从一个容器移动到另一个容器
 
-# Containers 容器
+## Containers 容器
 
 参考“UE4容器”文章
 
 **Ticker** Tick执行工具，在FEngineLoop::Tick()里执行Tick操作，便于简单自由的添加定时操作。
 
-# Delegates 委托
+## Delegates 委托
 
 **Delegate** 包含了委托系统基本的说明书；定义了实例化委托类的宏，这里的宏表示了委托本质是什么类；通过宏封装了动态委托的声明与实现，以及一些基本的绑定与触发函数。
 
@@ -102,15 +102,15 @@ TBaseDynamicMulticastDelegate，动态多播委托，在TMulticastScriptDelegate
 TScriptDelegate，动态单播委托，与普通的委托类似，但是提供了额外的序列化函数。
 TMulticastScriptDelegate，动态多播委托，通过一个数组包含了多个动态单播委托。
 
-# Hash
+## Hash
 
 **CityHash** google开发的一套非常高效的Hash算法。
 
 **xxHash** 针对小数据集速度更快的Hash算法。引擎中目前未使用。
 
-# Internationalization 国际化
+## Internationalization 国际化
 
-# Logging 日志
+## Logging 日志
 
 **IMessageLog** 基于原始的FMsg::Logf方法，封装了类似于UE_LOG的另一套log输出方法，期望用于包含丰富标记信息的log，例如颜色、大量标签、按页分类等。
 
@@ -126,7 +126,7 @@ TMulticastScriptDelegate，动态多播委托，通过一个数组包含了多�
 
 **LogVerbosity** 定义log输出级别从无Log到崩溃Log共7级，输出设备会根据Log级别来添加颜色与过滤。
 
-# Math 数学
+## Math 数学
 
 **Axis** 通过枚举定义了几个常用的轴，X、Y、Z、XY等。
 
@@ -154,13 +154,13 @@ TMulticastScriptDelegate，动态多播委托，通过一个数组包含了多�
 
 **Vector2DHalf** 由半精度浮点数x、y构成的2D坐标点或向量。
 
-# Memory
+## Memory
 
 **MemoryArena** 一套内存缓存策略，应该已经废弃了，只保留了一层壳，FMemory中包含更完善的分配策略。
 
 **MemPro** 一套内存分析工具，通过在代码中重载内存分配函数并与MemPro程序配合使用。
 
-# Misc 杂项
+## Misc 杂项
 
 **DateTime** 通过int64存储以100纳秒为单位，存储0001-01-01 00:00:00.0到9999-12-31 23:59:59.9999999的时间。封装了大量时间格式转换方法可与各种格式表示的时间互相转换，同时额外提供获取当前时间、时间计算函数。
 
@@ -174,7 +174,21 @@ TMulticastScriptDelegate，动态多播委托，通过一个数组包含了多�
 
 **Timespan** 表示时间间隔的数据类型，主要用于配合DateTime完成时间计算。
 
-# Templates 模板
+## String 字符串操作
+
+**BytesToHex** 将字节流转换为16进制的字符串
+
+**Find** 简单但是专用的代码，当比较容易查找成功时，存在优势，否则随字符串变长性能快速下降
+
+**HexToBytes** 将16进制字符串转换为字节流
+
+**LexFromString** 封装了字符串转换为数字的方法
+
+**ParseLines** 将字符串拆分为每一行，兼容/r/n与/n的格式，每一行执行一次回调函数
+
+**ParseTokens** 将字符串按照给定的字符或字符串分割
+
+## Templates 模板
 
 ​	除下方描述的几个重要模板外，还提供了多个类型萃取traits模板，少量其它特殊功能模板。
 
