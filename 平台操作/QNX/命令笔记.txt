@@ -8,7 +8,7 @@ cd /nfs_share/MultiScreen2
 
 
 QNX命令
-pidin 查看正在运行的进程
+pidin 查看正在运行的进程、查找所有线程等
 slay -9 cluster_hmi 关闭默认launcher进程
 slay -P 63 VehicleVarietyPack.elf 调整进程优先级
 sync 同步硬盘空间
