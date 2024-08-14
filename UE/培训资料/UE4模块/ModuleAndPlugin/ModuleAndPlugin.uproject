@@ -1,0 +1,18 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{3C9FF360-4077-1540-051C-DEA6D84CBE7A}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "ModuleAndPlugin",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "ModuleDemo1",
+			"Type": "Runtime",
+			"LoadingPhase": "PostConfigInit"
+		}
+	]
+}
