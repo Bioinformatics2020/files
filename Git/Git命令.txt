@@ -37,6 +37,7 @@ git push -u origin master
 git remote 显示现有远程的列表
 	-v 显示详细详细
 	add <name> <url> 添加远程仓库
+	remove <name> 移除远程仓库
 
 # 创建本地仓库
 git clone (url) 克隆远程仓库
@@ -48,10 +49,12 @@ git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*" 修改分�
 
 ### git分支
 #切换分支
-git checkout . 切换到当前分支（放弃工作区中全部的修改）
-git checkout (branchname) 切换到branchname分支
-git checkout -b (branchname) 创建并切换到新的分支.
-这个命令是将git branch newbranch和git checkout newbranch合在一起的结果
+git checkout 
+	. 切换到当前分支（放弃工作区中全部的修改）
+	(branchname) 切换到branchname分支
+	--orphan (branchname) 创建一个空分支
+	-b (branchname) 创建并切换到新的分支.
+	--track origin/master 切换到指定的远程分支
 
 #文件版本回退
 git checkout 提交hash值 文件或文件名
@@ -109,6 +112,9 @@ git ls-files
 # git check-ignore 
 	-v 文件名 输出文件被排除的位置
 
+# git stash 暂存工作区修改
+	pop 应用上一次暂存文件并删除暂存记录
+	list 显示暂存记录
 
 
 ### 配置文件
@@ -152,3 +158,11 @@ git submodule update --init --recursive 下载子项目
 ssh-keygen -t rsa -C "2252313806@qq.com" 生成SSH密匙
 将生成文件里的公匙配置到GitHub setting SSH keys里面
 ssh -T git@github.com 验证SSH连接
+
+
+# git代码从一个仓库移动到另一个仓库
+git remote add <branch1> <url> 绑定第一个仓库
+git remote add <branch2> <url> 绑定第二个仓库
+git pull branch1 master 拉取第一个仓库的提交
+git push -u origin2 master 提交到第二个仓库
+

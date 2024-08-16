@@ -2,4 +2,3 @@ Renderdoc.CaptureFrame 开始截帧
 
 如果需要调试 Slate 代码，需要启用命令 renderdoc.CaptureAllActivity 1；
 如果需要调试 Shader，找到 Engine\Config\ConsoleVariables.ini 文件，取消注释 r.Shaders.Optimize = 0 和 r.Shaders.KeepDebugInfo =1；重启引擎；
-

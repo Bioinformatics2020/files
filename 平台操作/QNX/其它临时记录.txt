@@ -1,0 +1,7 @@
+cd /nfs_share/HotUpdate/QNX
+
+./HotUpdate-QNX-Shipping.elf -windowdisplay=1 -ResX=700 -ResY=500 -windowed
+
+cp -r UpdatePak2 HotUpdate/Content/UpdatePak 
+rm -r HotUpdate/Content/UpdatePak 
+cp -r UpdatePak1 HotUpdate/Content/UpdatePak 

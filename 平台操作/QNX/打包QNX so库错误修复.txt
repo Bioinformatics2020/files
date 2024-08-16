@@ -1,70 +1,61 @@
 1. UEBuildQNX.cs 428
-默认关闭打包QNX动态库功能，这里强行开启
-return true;
-替换为->
-return false;
-
+   默认关闭打包QNX动态库功能，这里强行开启
+   return true;
+   替换为->
+   return false;
 
 2. UE4Build.cs 93
-Manifest查找sym文件失败，这里手动创建一个空的sym文件，Linux也存在相同问题
-throw new UE4BuildException("{0} was in manifest but was not produced.", Item);
-替换为->
-File.WriteAllText(Item, string.Empty);
-
+   Manifest查找sym文件失败，这里手动创建一个空的sym文件，Linux也存在相同问题
+   throw new UE4BuildException("{0} was in manifest but was not produced.", Item);
+   替换为->
+   File.WriteAllText(Item, string.Empty);
 
 3. AssetDataTagMap.h 67
-这里位域编译报错，原因未知
-EValueType 		Type : TypeBits;
-uint32 			Index : IndexBits;
-替换为->
-EValueType 		Type;
-uint32 			Index;
-
+   这里位域编译报错，原因未知
+   EValueType         Type : TypeBits;
+   uint32             Index : IndexBits;
+   替换为->
+   EValueType         Type;
+   uint32             Index;
 
 4. AssetDataTagMap.h 112
-内存对齐编译报错，原因未知
-struct COREUOBJECT_API alignas(uint64) FMapHandle
-替换为->
-struct COREUOBJECT_API FMapHandle
-
+   内存对齐编译报错，原因未知
+   struct COREUOBJECT_API alignas(uint64) FMapHandle
+   替换为->
+   struct COREUOBJECT_API FMapHandle
 
 5. AssetDataTagMapSerializationDetails.h 55
-内存对齐编译报错，原因未知
-struct COREUOBJECT_API alignas(uint64) FPartialMapHandle
-替换为->
-struct COREUOBJECT_API FPartialMapHandle
-
+   内存对齐编译报错，原因未知
+   struct COREUOBJECT_API alignas(uint64) FPartialMapHandle
+   替换为->
+   struct COREUOBJECT_API FPartialMapHandle
 
 6. BuildMode.cs 301
-编译行为检查异常，检查并行编译过程中是否会出现文件占用冲突等问题
-ActionGraph.CheckForConflicts(Makefiles.SelectMany(x => x.Actions));
-替换为->
-//ActionGraph.CheckForConflicts(Makefiles.SelectMany(x => x.Actions));
-
+   编译行为检查异常，检查并行编译过程中是否会出现文件占用冲突等问题
+   ActionGraph.CheckForConflicts(Makefiles.SelectMany(x => x.Actions));
+   替换为->
+   //ActionGraph.CheckForConflicts(Makefiles.SelectMany(x => x.Actions));
 
 7. ParallelExecuor.cs 276
-这里没有错误，只是开启进程执行编译链接等任务，这里的log比较关键
-插入代码->
-Log.TraceInformation("ManagedProcess {0}--{1}--{2}", Action.Inner.CommandPath.FullName,Action.Inner.CommandArguments,Action.Inner.WorkingDirectory.FullName);
-
+   这里没有错误，只是开启进程执行编译链接等任务，这里的log比较关键
+   插入代码->
+   Log.TraceInformation("ManagedProcess {0}--{1}--{2}", Action.Inner.CommandPath.FullName,Action.Inner.CommandArguments,Action.Inner.WorkingDirectory.FullName);
 
 8. QNXToolChain.cs 263
-链接生成so库的过程中符号表丢失，并且生成的符号表错误，这里暂时跳过符号表优化，并修改so文件名
-Out += string.Format("move /Y \"{0}.temp\" \"{1}\"\n",
-	OutputFile.AbsolutePath,
-	OutputFile.AbsolutePath
-替换为->
-Out += string.Format("move /Y \"{0}\" \"{1}\"\n",
-	OutputFile.AbsolutePath,
-	OutputFile.Directory + "\\lib" + OutputFile.Name
-	
+   链接生成so库的过程中符号表丢失，并且生成的符号表错误，这里暂时跳过符号表优化，并修改so文件名
+   Out += string.Format("move /Y \"{0}.temp\" \"{1}\"\n",
+    OutputFile.AbsolutePath,
+    OutputFile.AbsolutePath
+   替换为->
+   Out += string.Format("move /Y \"{0}\" \"{1}\"\n",
+    OutputFile.AbsolutePath,
+    OutputFile.Directory + "\\lib" + OutputFile.Name
 
 9. QNXToolChain.cs 754
-链接生成so库的过程中符号表丢失，--version-script要求手动指定导出符号，但是目前并没有指定
-Result += " -Wl,--version-script=\"" + VersionScriptFile + "\"";
-替换为->
-//Result += " -Wl,--version-script=\"" + VersionScriptFile + "\"";
-
+   链接生成so库的过程中符号表丢失，--version-script要求手动指定导出符号，但是目前并没有指定
+   Result += " -Wl,--version-script=\"" + VersionScriptFile + "\"";
+   替换为->
+   //Result += " -Wl,--version-script=\"" + VersionScriptFile + "\"";
 
 10.QNXToolChain.cs 
 编译c++时参数错误，编译与链接使用的命令行参数不同，这里创建一个新文件使用编译参数
@@ -82,8 +73,7 @@ ResponseLines2.Add(string.Format("\"{0}\"", InputFile.AbsolutePath.Replace("\\",
 在for循环结束后插入->
 File.WriteAllLines(ResponseFileName.FullName + "2", ResponseLines2);
 
-
 11. TraceLog_QNX.Build.cs 11
-修复TraceLog_QNX对socket依赖错误
-插入代码->
-PublicSystemLibraries.Add("socket");
+    修复TraceLog_QNX对socket依赖错误
+    插入代码->
+    PublicSystemLibraries.Add("socket");

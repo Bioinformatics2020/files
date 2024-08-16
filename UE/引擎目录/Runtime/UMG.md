@@ -9,4 +9,3 @@
 # Slate
 
 **WidgetRenderer**：用于渲染Widget到FRenderTarget。封装了FSlateRenderer的AddWidgetRendererUpdate函数，直接调用DrawWindow即可。参考UWidgetComponent与SRetainerWidget使用。
-
