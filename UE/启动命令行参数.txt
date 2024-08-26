@@ -1,5 +1,7 @@
 # Unreal Insighttr
+
 ## 
+
 -tracehost=127.0.0.1 连接网络端口
 -tracefile=d:/foo/bar.utrace 保存到本地
 
@@ -18,7 +20,6 @@
 //传入控制台参数
 -ExecCmds="t.MaxFPS 30,stat fps" 使用","分割命令，其它用法参考以下源码
 多个控制台参数可以使用文件传递 参考Engine/Source/Runtime/Engine/Private/UnrealEngine.cpp 1652
-
 
 控制台命令
 r.tonemapperfilm 0 //调整自发光

@@ -1,97 +1,110 @@
-### 基础用法
-# 标准流程
-git status  查看当前状态
-git add XXX  添加到本地git缓存区
-git commit -m "提交代码"   推送修改到本地git库中
+# 基础用法
+
+### 标准流程
+
+git status  查看工作状态
+git add XXX  跟踪新文件、将已修改的文件放入暂存区、标记文件冲突已解决
+git commit -m "提交代码"   推送修改暂存区内容到本地git库中
 git pull  拉取最新代码，与本地代码合并，解决冲突
-git push  提交到远程仓库
+git push  提交本地仓库到远程仓库
 
+# git仓库
 
-### git仓库
-# git协议
+### git协议
+
 Local 本地协议
-	优点：创建简单，依靠局域网共享文件系统进行访问，使用本地的文件权限与网络权限进行管理。
-	缺点：共享文件系统配置复杂，远程访问不方便，权限配置不方便
-	/srv/git/project.git
-	file:///srv/git/project.git
+    优点：创建简单，依靠局域网共享文件系统进行访问，使用本地的文件权限与网络权限进行管理。
+    缺点：共享文件系统配置复杂，远程访问不方便，权限配置不方便
+    /srv/git/project.git
+    file:///srv/git/project.git
 HTTP
-	智能HTTP协议 新版本，普遍使用
-	哑(Dumb)HTTP协议 
+    智能HTTP协议 新版本，普遍使用
+    哑(Dumb)HTTP协议 
 SSH
-	优点：架设简单，访问安全
+    优点：架设简单，访问安全
 Git
-	优点：快速
+    优点：快速
 
-# 创建远程仓库
+### 创建远程仓库
+
 git init 初始化仓库
 git config receive.denyCurrentBranch ignore 设置当前仓库为远程仓库
 
-# 关联本地仓库到远程仓库
+### 关联本地仓库到远程仓库
+
 git init
 git remote add origin D:\\GitServer
 git add .
 git commit -m "clone下来的源码"
-git push -u origin master
+git push -u origin master 指定推送到origin仓库的master分支
 
-# 管理远程仓库
+### 管理远程仓库
+
 git remote 显示现有远程的列表
-	-v 显示详细详细
-	add <name> <url> 添加远程仓库
-	remove <name> 移除远程仓库
+    -v 显示详细详细
+    add <name> <url> 添加远程仓库
+    remove <name> 移除远程仓库
 
-# 创建本地仓库
+### 创建本地仓库
+
 git clone (url) 克隆远程仓库
 Git clone http://用户名@125.01.02.03:10086/test/xiangmu.git 无法找到仓库时需要加入用户名称再拉取（输入密码后即拉取代码成功）
-	--depth <深度> 创建"浅"克隆，忽略历史提交，仅克隆master分支最新版本，建议开发时不要使用这个选项
+    --depth <深度> 创建"浅"克隆，忽略历史提交，仅克隆master分支最新版本，建议开发时不要使用这个选项
 git pull --unshallow 拉取历史提交，使浅仓库变为与源仓库相同
 git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*" 修改分支配置选项为关联多个分支
 
+# git分支
 
-### git分支
-#切换分支
+### 切换分支
+
 git checkout 
-	. 切换到当前分支（放弃工作区中全部的修改）
-	(branchname) 切换到branchname分支
-	--orphan (branchname) 创建一个空分支
-	-b (branchname) 创建并切换到新的分支.
-	--track origin/master 切换到指定的远程分支
+    . 切换到当前分支（放弃工作区中全部的修改）
+    (branchname) 切换到branchname分支
+    --orphan (branchname) 创建一个空分支
+    -b (branchname) 创建并切换到新的分支.
+    --track origin/master 切换到指定的远程分支
 
-#文件版本回退
+### 文件版本回退
+
 git checkout 提交hash值 文件或文件名
 
-# 分支管理
+### 分支管理
+
 git branch 列出本地的分支
-	-r 列出远程分支
-	-a 列出远程跟踪的分支和本地分支
-	-d (branchname) 删除本地分支
+    -r 列出远程分支
+    -a 列出远程跟踪的分支和本地分支
+    -d (branchname) 删除本地分支
 git branch (branchname) 创建分支
 git merge (branchname) 合并某分支到当前分支
 git push origin --delete (branchname) 删除远程分支
 git push origin (branchname):(branchname) 推送本地分支到远程分支(新建远程分支)
 
+# git工作树
 
-### git工作树
-# git reset 删除的是已跟踪的文件，将已commit的回退。
+### git reset 删除的是已跟踪的文件，将已commit的回退。
+
 git reset --hard <HASH> #返回到某个节点，不保留修改，已有的改动会丢失。
 git reset --soft <HASH> #返回到某个节点, 保留修改，已有的改动会保留，在未提交中，git status或git diff可看。
 
-# git clean 删除的是未跟踪的文件
+### git clean 删除的是未跟踪的文件
+
 git clean 参数
     -n 不实际删除，只是进行演练，展示将要进行的操作，有哪些文件将要被删除。（可先使用该命令参数，然后再决定是否执行）
     -f 删除文件
     -i 显示将要删除的文件
     -d 递归删除目录及文件（未跟踪的）
     -q 仅显示错误，成功删除的文件不显示
-	-x 也删除被忽略的文档
-	-X 仅删除被忽略的文档
-git clean -df 	返回到某个节点，（未跟踪文件的删除）
+    -x 也删除被忽略的文档
+    -X 仅删除被忽略的文档
+git clean -df     返回到某个节点，（未跟踪文件的删除）
 git clean -nxdf （查看要删除的文件及目录，确认无误后再使用上面的命令进行删除）
 
-# git status - 显示工作树状态
+### git status - 显示工作树状态
+
 git status 工作树状态
-	-s 以简短的形式给出输出
-	-u 显示未追踪文件
-	--ignored 显示被忽略的文件
+    -s 以简短的形式给出输出，左侧为暂存区状态，右侧为工作区状态
+    -u 显示未追踪文件
+    --ignored 显示被忽略的文件
 输出提示：
 '' 未修改的
 M  已修改
@@ -104,65 +117,72 @@ U  更新但未合并
 ?  未被追踪的
 !  忽略不计
 
-# git ls-files 显示索引和工作目录树中的文件信息
+### git ls-files 显示索引和工作目录树中的文件信息
+
 git ls-files
-	-o,--others 在输出中显示其他（即未跟踪）文件
-	--exclude-standard 不显示标准的 Git 排除文件：.git/info/exclude、每个目录中的 .gitignore，以及用户的全局排除文件。
-	
-# git check-ignore 
-	-v 文件名 输出文件被排除的位置
+    -o,--others 在输出中显示其他（即未跟踪）文件
+    --exclude-standard 不显示标准的 Git 排除文件：.git/info/exclude、每个目录中的 .gitignore，以及用户的全局排除文件。
 
-# git stash 暂存工作区修改
-	pop 应用上一次暂存文件并删除暂存记录
-	list 显示暂存记录
+### git check-ignore
 
+    -v 文件名 输出文件被排除的位置
 
-### 配置文件
+### git stash 暂存工作区修改
+
+    pop 应用上一次暂存文件并删除暂存记录
+    list 显示暂存记录
+
+# 配置文件
+
 git config --global core.autocrlf false 关闭warning: LF 报错
 git config --global --list 查看全局配置
 git config --list 查看本地配置
+git config --list --show-origin 显示所有配置
+
 git凭证，需要在windows的凭证管理器中删除旧凭证，然后重新clone代码
-git config user.name "unreal engine consumer" 当前仓库修改用户名称
+
+git config --global user.name "unreal engine consumer" 全局修改用户名称
 git config user.email "2252313806@qq.com" 当前仓库修改用户名称
 
+# 特殊应用
 
-### 特殊应用
-# git解决冲突
+### git解决冲突
+
 git status 查看工作树状态
 手动解决冲突
-	1. git checkout --ours <fileName> 保留合并基准分支(本地的分支)改动的版本
-	2. git checkout --theirs <fileName> 保留被合并分支(仓库的分支)改动的版本
-	3. 手动修改
-	4. git revert <fileName> 保留当前分支的内容
-	在rebase中 基准分支是master
-	在merge中基准分支是当前分支
-	
+    1. git checkout --ours <fileName> 保留合并基准分支(本地的分支)改动的版本
+    2. git checkout --theirs <fileName> 保留被合并分支(仓库的分支)改动的版本
+    3. 手动修改
+    4. git revert <fileName> 保留当前分支的内容
+    在rebase中 基准分支是master
+    在merge中基准分支是当前分支
+
 git add <fileName> 添加到暂存区，表示冲突解决完成
 git commit -m "xxx" 提交到本地仓库
 git status 检查工作树状态
 git pull --rebase 在本地完成分支合并，避免仓库上多条分支线
 git push 提交到远程仓库
 
-# 子项目
+### 子项目
+
 git submodule add https://xxx/gittest.git src/gittest 添加子项目
 git submodule update --init --recursive 下载子项目
 
+### 忽略文件
 
-# 忽略文件
 全局配置文件(~/.gitignore)
 远程配置文件($PWD/.gitignore)
 本地配置文件($PWD/.git/info/exlude)
 
+### git与GitHub关联
 
-# git与GitHub关联
 ssh-keygen -t rsa -C "2252313806@qq.com" 生成SSH密匙
 将生成文件里的公匙配置到GitHub setting SSH keys里面
 ssh -T git@github.com 验证SSH连接
 
+### git代码从一个仓库移动到另一个仓库
 
-# git代码从一个仓库移动到另一个仓库
 git remote add <branch1> <url> 绑定第一个仓库
 git remote add <branch2> <url> 绑定第二个仓库
 git pull branch1 master 拉取第一个仓库的提交
 git push -u origin2 master 提交到第二个仓库
-

@@ -4,6 +4,8 @@ Protocol Buffers（简称protobuf）是Google开发的一种高效、自动化�
 
 官网：[Protocol Buffer Basics: C++ | Protocol Buffers Documentation (protobuf.dev)](https://protobuf.dev/getting-started/cpptutorial/)
 
+中文文档：[语言指南（proto 2） | 协议缓冲区文档 - ProtoBuf 中文](https://protobuf.com.cn/programming-guides/proto2/)
+
 github：[protocolbuffers/protobuf: Protocol Buffers - Google's data interchange format (github.com)](https://github.com/protocolbuffers/protobuf/tree/main)
 
 ### 主要特点：
@@ -94,22 +96,37 @@ parsed_person.email();
 //调用基类函数，序列化并添加到到字符串尾部。
 //类似的函数还有多个，基类中提供多种序列化接口，并转化为统一的输出类型，最终调用到子类的序列化函数。
 MessageLite::AppendToString(std::string* output)
+
     //调整字符串大小，找到开始添加数据的位置
 --->MessageLite::AppendPartialToString(std::string* output)
-		//调用子类方法，统计序列化之后的数据大小
+        //调用子类方法，统计序列化之后的数据大小
     --->Message::ByteSizeLong()
-    	//修改output容器大小
+            //逐个统计每个成员的大小，若成员无效或为默认值则跳过该成员的统计
+            //以下分别为字符串、嵌套结构体、整型大小统计方法
+        --->::google::protobuf::internal::WireFormatLite::StringSize(this->_internal_name());
+        --->::google::protobuf::internal::WireFormatLite::MessageSize(msg);
+        --->::google::protobuf::internal::WireFormatLite::Int32SizePlusOne(this->_internal_id());
+
+        //修改output容器大小
     --->absl::strings_internal::STLStringResizeUninitializedAmortized()
-    	//找到容器的原本的数据尾部，从这里开始添加
+
+        //找到容器的原本的数据尾部，从这里开始添加
     --->uint8_t* start=io::mutable_string_data(output) + old_size
-    	//将容器转化为地址起点与剩余容器长度(类似数组形式)，并调用序列化到数组
+
+        //将容器转化为地址起点与剩余容器长度(类似数组形式)，并调用序列化到数组
     --->SerializeToArrayImpl(const MessageLite& msg, uint8_t* target, int size)
-    		//将地址与长度封装成io::EpsCopyOutputStream便于指针自动移动
-    	--->io::EpsCopyOutputStream out(target, size)
-    		//在子类完成数据序列化，并写入到输出流
-    	--->AddressBook::_InternalSerialize(
-    			::uint8_t* target,
-    			::google::protobuf::io::EpsCopyOutputStream* stream) 
+            //将地址与长度封装成io::EpsCopyOutputStream便于指针自动移动
+        --->io::EpsCopyOutputStream out(target, size)
+
+            //在子类完成数据序列化，并写入到输出流
+        --->AddressBook::_InternalSerialize(
+                ::uint8_t* target,
+                ::google::protobuf::io::EpsCopyOutputStream* stream) 
+                //逐个对每一个有效成员完成序列化
+                ////以下分别为字符串、嵌套结构体、整型序列化方法
+            --->stream->WriteStringMaybeAliased(3, _s, target);
+            --->::google::protobuf::internal::WireFormatLite::InternalWriteMessage(4, repfield, repfield.GetCachedSize(),target, stream);
+            --->::google::protobuf::internal::WireFormatLite::WriteInt32ToArrayWithField<2>(stream, this->_internal_id(), target);
 ```
 
 **内存布局**
@@ -117,8 +134,9 @@ MessageLite::AppendToString(std::string* output)
 以Person类为例
 
 ```c++
-//Person大小 80
+//Person 默认大小为 80
 //注意实际大小会大许多，这里只是使用指针导致无法统计指向的对象的大小
+//例如last_updated是以指针形式存在，phones是添加元素时动态分配空间
 sizeof(Person) = 80;
 
 //静态数据 
@@ -157,4 +175,3 @@ struct Impl_ {
 //基类(虚表8，InternalMetadata 8) 大小 16
 ::google::protobuf::Message
 ```
-

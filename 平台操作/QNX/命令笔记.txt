@@ -6,7 +6,6 @@ yes
 a2zZtoA
 cd /nfs_share/MultiScreen2
 
-
 QNX命令
 pidin 查看正在运行的进程、查找所有线程等
 slay -9 cluster_hmi 关闭默认launcher进程
@@ -32,12 +31,10 @@ screencmd setiv win-9 pipeline 5 设置窗口使用指定的pipeline
 /ifs/lib64/graphics.conf 记录了屏幕与对应的pipeline信息
 find / -name *.conf 查找所有的conf文件
 
-
 在DefaultEngine.ini指定显示屏幕
 [/Script/QNXRuntimeSettings.QNXRuntimeSettings]
 WindowDisplay=1
 可以通过-WindowDisplay=1命令行参数指定。
-
 
 创建多个窗口函数
 启动时执行：
@@ -48,7 +45,6 @@ UQNXDisplayManagerBPLibrary::AssignDisplaySurface()
 UQNXDisplayManagerBPLibrary::TickSurfaces()
 UQNXDisplayManagerBPLibrary::RenderWidgetToRenderTarget()
 
-
 测试命令
 slay -9 VehicleVarietyPack.elf
 
@@ -57,7 +53,6 @@ slay -9 qvm
 sysprofiler_app --cpu --gpu --io --mem --sample-time 2000 --total-time 50 --file=1 &
 hogs >> Results_sysprofiler/hogs1.txt &
 ./VehicleVarietyPack.elf -tracefile=/nfs_share/MultiScreen/QNX/Results_sysprofiler/1.utrace -trace=frame,cpu,gpu,memory,loadtime -statnamedevents -windowdisplay=1 -ExecCmds="t.MaxFPS 30" -loadmap=0
-
 
 单进程 仪表
 slay -9 qvm
@@ -111,9 +106,7 @@ sysprofiler_app --cpu --gpu --io --mem --sample-time 2000 --total-time 50 --file
 hogs >> Results_sysprofiler/hogs5_2.txt &
 ./VehicleVarietyPack.elf -tracefile=/nfs_share/MultiScreen/QNX/Results_sysprofiler/5_2.utrace -trace=frame,cpu,gpu,memory,loadtime -statnamedevents -windowdisplay=1 -ExecCmds="t.MaxFPS 30" -loadmap=8
 
-
 slay -9 VehicleVarietyPack.elf
-
 
 草稿
 sysprofiler_app --cpu --gpu --io --mem --sample-time 200 --total-time 5
