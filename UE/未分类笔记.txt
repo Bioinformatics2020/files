@@ -1,7 +1,5 @@
 UFactory 决定内容浏览器创建对象的方法
 
-
-
 后处理体积
 可以修改自发光效果
 可以设置SSAA属性
@@ -17,9 +15,6 @@ Open JDK进程需要杀掉
 打包
 蓝图的打包按钮不只是调用RunUAT.bat这么简单，它会提前编译许多依赖项
 
-
-
-
 材质
 输入节点含义
 CameraVector：normalize(采样点-摄像机坐标)
@@ -28,6 +23,9 @@ CameraVector：normalize(采样点-摄像机坐标)
 CameraDepthFade：返回采样点到摄像机的距离，近到远为0-1
 CheckerPattern：将物体分割为多个瓷砖块
 
-
-
 模型渲染的起点可以参考FPrimitiveSceneProxy
+
+
+半透明窗口源码Alpha项目方案
+[/Script/Engine.RendererSettings]  
+r.Mobile.PropagateAlpha=1

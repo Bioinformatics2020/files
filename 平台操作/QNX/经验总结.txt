@@ -1,11 +1,10 @@
 QNX通信方法：
+
 1. 连接QNX串口
 2. 连接安卓USB接口
 3. 启动设备(先确保连接串口)
 4. 通过ADB完成数据传输
 5. 在QNX环境运行程序
-
-
 
 测试命令行：三个进程 仪表+HUD+中控
 slay -9 cluster_hmi (会重启3次，需要重复kill)
@@ -21,8 +20,6 @@ sleep 1
 sleep 1
 ./VehicleVarietyPack.elf -windowdisplay=3 -ExecCmds="t.MaxFPS 30" -loadmap=3 
 
-
-
 QNX打包需要配置多个环境变量
 打包过程中需要手动创建一个.sym文件(根据报错提示添加即可)
 调整进程优先级作用有限。
@@ -32,8 +29,6 @@ Unreal Insight不能在QNX统计GPU
 多个进程同时启动时启动时间明显边长
 多个进程同时启动会有未知bug，需要延迟启动
 top 命令只能统计线程开销，UE存在多个线程，难以被top命令统计
-
-
 
 代码中命令行解析方法：FParse::Value(FCommandLine::Get(), TEXT("-LoadMap="), LoadMap);
 

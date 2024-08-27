@@ -30,7 +30,7 @@
 
 **Game线程**
 
-​	在FQNXDisplaySurface中绑定UTextureRenderTarget2D
+​    在FQNXDisplaySurface中绑定UTextureRenderTarget2D
 
 ### 更新窗口
 

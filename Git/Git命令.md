@@ -3,7 +3,7 @@
 ### 标准流程
 
 git status  查看工作状态
-git add XXX  跟踪新文件、将已修改的文件放入暂存区、标记文件冲突已解决
+git add xxx 跟踪新文件、将已修改的文件放入暂存区、标记文件冲突已解决
 git commit -m "提交代码"   推送修改暂存区内容到本地git库中
 git pull  拉取最新代码，与本地代码合并，解决冲突
 git push  提交本地仓库到远程仓库
@@ -44,6 +44,7 @@ git remote 显示现有远程的列表
     -v 显示详细详细
     add <name> <url> 添加远程仓库
     remove <name> 移除远程仓库
+    rename <oldname> <newname> 重命名远程仓库名称
 
 ### 创建本地仓库
 
@@ -59,9 +60,10 @@ git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*" 修改分�
 
 git checkout 
     . 切换到当前分支（放弃工作区中全部的修改）
-    (branchname) 切换到branchname分支
+    (branchname) 切换到branchname分支。注意需要stash当前的工作区。未关联文件不受影响
     --orphan (branchname) 创建一个空分支
     -b (branchname) 创建并切换到新的分支.
+    -b (branchname) (tagname) 基于某个标签对应的版本创建并切换到新的分支.
     --track origin/master 切换到指定的远程分支
 
 ### 文件版本回退
@@ -74,63 +76,94 @@ git branch 列出本地的分支
     -r 列出远程分支
     -a 列出远程跟踪的分支和本地分支
     -d (branchname) 删除本地分支
+    --merged 检查哪些分支已合并到主分支
+    --no-merged 检查未合并到主分支的分支
+
 git branch (branchname) 创建分支
+
 git merge (branchname) 合并某分支到当前分支
+    遇到冲突时，修改代码解决冲突
+    git status 查看unmerged状态的文件
+    git add (filename) 标记文件冲突已解决
+    git commit 解决完成冲突之后执行commit操作，提交本次merge行为
+
 git push origin --delete (branchname) 删除远程分支
+
 git push origin (branchname):(branchname) 推送本地分支到远程分支(新建远程分支)
+
+### 标签
+
+git tag 查看标签
+  -l "通配符" 使用通配符查找标签
+  (v0.1) 创建轻量标签
+  -a (v0.1) -m "注释" 创建附注标签
+  -a (v0.1) -m "注释" hsah 向指定版本创建附注标签
+  -d (v0.1) 删除标签
+
+git show (v0.1) 查看标签对应的版本信息
+
+git push origin --tags 提交本地创建的所有标签
+git push origin --delete <tagname> 删除远程标签
 
 # git工作树
 
-### git reset 删除的是已跟踪的文件，将已commit的回退。
+### 移动或删除
 
-git reset --hard <HASH> #返回到某个节点，不保留修改，已有的改动会丢失。
-git reset --soft <HASH> #返回到某个节点, 保留修改，已有的改动会保留，在未提交中，git status或git diff可看。
+git mv <源文件> <目标文件>移动或重命名文件
+  -f 强制移动(覆盖)
+  -k 跳过错误操作
+  -v 显示详细信息
 
-### git clean 删除的是未跟踪的文件
+git reset 删除的是已跟踪的文件，将已commit的回退。
+  --hard <HASH> #返回到某个节点，不保留修改，已有的改动会丢失。
+  --soft <HASH> #返回到某个节点, 保留修改，已有的改动会保留，在未提交中，git status或git diff可看。
 
-git clean 参数
-    -n 不实际删除，只是进行演练，展示将要进行的操作，有哪些文件将要被删除。（可先使用该命令参数，然后再决定是否执行）
-    -f 删除文件
-    -i 显示将要删除的文件
-    -d 递归删除目录及文件（未跟踪的）
-    -q 仅显示错误，成功删除的文件不显示
-    -x 也删除被忽略的文档
-    -X 仅删除被忽略的文档
-git clean -df     返回到某个节点，（未跟踪文件的删除）
-git clean -nxdf （查看要删除的文件及目录，确认无误后再使用上面的命令进行删除）
+git clean 删除未跟踪的文件
+  -n 不实际删除，只是进行演练，展示将要进行的操作，有哪些文件将要被删除。（可先使用该命令参数，然后再决定是否执行）
+  -f 删除文件
+  -i 显示将要删除的文件
+  -d 递归删除目录及文件（未跟踪的）
+  -q 仅显示错误，成功删除的文件不显示
+  -x 也删除被忽略的文档
+  -X 仅删除被忽略的文档
+  示例：
+    -df     返回到某个节点，（未跟踪文件的删除）
+    -nxdf （查看要删除的文件及目录，确认无误后再使用上面的命令进行删除）
 
-### git status - 显示工作树状态
+### 查询
 
 git status 工作树状态
-    -s 以简短的形式给出输出，左侧为暂存区状态，右侧为工作区状态
-    -u 显示未追踪文件
-    --ignored 显示被忽略的文件
-输出提示：
-'' 未修改的
-M  已修改
-T  文件类型改变
-A  添加
-D  删除
-R  重新命名
-C  被复制
-U  更新但未合并
-?  未被追踪的
-!  忽略不计
+  -s 以简短的形式给出输出，左侧为暂存区状态，右侧为工作区状态
+  -u 显示未追踪文件
+  --ignored 显示被忽略的文件
 
-### git ls-files 显示索引和工作目录树中的文件信息
+  输出提示：
+  '' 未修改的
+  M  已修改
+  T  文件类型改变
+  A  添加
+  D  删除
+  R  重新命名
+  C  被复制
+  U  更新但未合并
+  ?  未被追踪的
+  !  忽略不计
 
-git ls-files
+git ls-files 显示工作目录中的文件信息
     -o,--others 在输出中显示其他（即未跟踪）文件
     --exclude-standard 不显示标准的 Git 排除文件：.git/info/exclude、每个目录中的 .gitignore，以及用户的全局排除文件。
 
-### git check-ignore
-
+git check-ignore
     -v 文件名 输出文件被排除的位置
 
-### git stash 暂存工作区修改
-
+git stash 暂存工作区修改
     pop 应用上一次暂存文件并删除暂存记录
     list 显示暂存记录
+
+### 撤销提交
+
+git commit --amend 修改commit信息
+git commit --amend --author="name \<abc@qq.com>" --no-edit 修改commit作者、邮箱
 
 # 配置文件
 
