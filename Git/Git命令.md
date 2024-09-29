@@ -15,15 +15,15 @@ git push  提交本地仓库到远程仓库
 Local 本地协议
     优点：创建简单，依靠局域网共享文件系统进行访问，使用本地的文件权限与网络权限进行管理。
     缺点：共享文件系统配置复杂，远程访问不方便，权限配置不方便
-    /srv/git/project.git
-    file:///srv/git/project.git
+    /srv/git/project.git 本地库硬链接
+    file:///srv/git/project.git 类似网络传输连接
 HTTP
     智能HTTP协议 新版本，普遍使用
     哑(Dumb)HTTP协议 
 SSH
-    优点：架设简单，访问安全
+    优点：架设对于专业人员简单，用户需要密匙访问
 Git
-    优点：快速
+    优点：简单快速
 
 ### 创建远程仓库
 
@@ -64,6 +64,7 @@ git checkout
     --orphan (branchname) 创建一个空分支
     -b (branchname) 创建并切换到新的分支.
     -b (branchname) (tagname) 基于某个标签对应的版本创建并切换到新的分支.
+    -b (branchname) (hash) 基于某个hash对应的版本创建并切换到新的分支.
     --track origin/master 切换到指定的远程分支
 
 ### 文件版本回退
@@ -72,14 +73,27 @@ git checkout 提交hash值 文件或文件名
 
 ### 分支管理
 
+#### 分支查看，创建，删除
+
 git branch 列出本地的分支
     -r 列出远程分支
     -a 列出远程跟踪的分支和本地分支
     -d (branchname) 删除本地分支
+    -vv 查看本地分支与对应的跟踪分支
     --merged 检查哪些分支已合并到主分支
     --no-merged 检查未合并到主分支的分支
 
 git branch (branchname) 创建分支
+
+#### 分支同步
+
+git push origin --delete (branchname) 删除远程分支
+
+git push origin (branchname):(branchname) 推送本地分支到远程分支(新建远程分支)
+
+git fetch 更新远程分支
+
+#### 分支合并
 
 git merge (branchname) 合并某分支到当前分支
     遇到冲突时，修改代码解决冲突
@@ -87,9 +101,18 @@ git merge (branchname) 合并某分支到当前分支
     git add (filename) 标记文件冲突已解决
     git commit 解决完成冲突之后执行commit操作，提交本次merge行为
 
-git push origin --delete (branchname) 删除远程分支
+git rebase 变基操作，将一个分支的修改在另一个分支重新修改一遍
+    [Git - 变基 (git-scm.com)](https://git-scm.com/book/zh/v2/Git-%E5%88%86%E6%94%AF-%E5%8F%98%E5%9F%BA)
+    master 将当前分支变基到master分支
+    --onto master branch1 branch2 当主分支上分离出branch1, branch1上分离出branch2，
+        并且branch2完成开发后需要将branch2合并到master,但是保留branch1不变时执行命令，
+        具体含义为取出brach2分支，找出它从brach1分支分歧之后的修改，并应用到master分支
 
-git push origin (branchname):(branchname) 推送本地分支到远程分支(新建远程分支)
+git cherry-pick (hash) 将指定的commit应用于当前分支
+
+    git cherry-pick hashA..hashB 将A到B之间的所有提交应用到当前分支
+
+    -e 修复commit信息
 
 ### 标签
 
@@ -160,10 +183,21 @@ git stash 暂存工作区修改
     pop 应用上一次暂存文件并删除暂存记录
     list 显示暂存记录
 
-### 撤销提交
+### 修改提交
 
 git commit --amend 修改commit信息
 git commit --amend --author="name \<abc@qq.com>" --no-edit 修改commit作者、邮箱
+
+git commit -a --amend --no-edit 重新修改代码并提交，替换掉最后一次提交
+
+修改已提交的内容：
+
+    [Git - 重写历史 (git-scm.com)](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E9%87%8D%E5%86%99%E5%8E%86%E5%8F%B2)
+    基于git rebase -i选项，自某个版本开始，重写之后的所有提交，功能强大但是影响巨大
+    通过交互式命令行完成，支持修改commit信息、修改commit顺序、压缩提交、拆分提交等
+    在服务器上完成变基后，其它人需要使用git pull --rebase自动识别服务器的变基修改并在本地完成自动变基
+
+    基于git filter-branch功能，可以更加自由的修改任何历史信息，但是指令比较复杂
 
 # 配置文件
 
@@ -196,10 +230,10 @@ git status 检查工作树状态
 git pull --rebase 在本地完成分支合并，避免仓库上多条分支线
 git push 提交到远程仓库
 
-### 子项目
+### 子模块
 
-git submodule add https://xxx/gittest.git src/gittest 添加子项目
-git submodule update --init --recursive 下载子项目
+git submodule add https://xxx/gittest.git src/gittest 添加子模块
+git submodule update --init --recursive 下载子模块
 
 ### 忽略文件
 
@@ -219,3 +253,38 @@ git remote add <branch1> <url> 绑定第一个仓库
 git remote add <branch2> <url> 绑定第二个仓库
 git pull branch1 master 拉取第一个仓库的提交
 git push -u origin2 master 提交到第二个仓库
+
+### 其它
+
+git gc 压缩.git文件，将全量保存的历史版本改为部分全量部分保存差异
+    --aggressive 更高的压缩比例，效果有限，不推荐
+
+# .git文件
+
+### config
+
+项目配置选项
+
+### description 描述/说明
+
+GitWeb程序相关
+
+### HEDA
+
+文件目前被检出的分支
+
+### hooks/
+
+客户端或服务器的钩子脚本，默认提供多种示例
+
+### info/
+
+包含一个exclude文件，记录本地排除文件
+
+### objects/
+
+对象数据库，存储所有数据内容
+
+### refs/
+
+存储指向数据(分支、仓库、标签等)的指针

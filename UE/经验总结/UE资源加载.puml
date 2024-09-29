@@ -1,0 +1,116 @@
+@startuml
+
+start
+:通过软引用，资源同步加载
+:SoftObjectPtr::LoadSychronous;
+
+:开始在内存中查找资源缓存;
+if(检查软指针内部是否存在缓存) then (yes)
+    :根据缓存的索引,
+    在GUObjectArray找到资源对象;
+else (no)
+    :FSoftObjectPath::ResolveObject
+    根据路径在统计表中查找资源;
+    :FSoftObjectPath::ToString
+    将包路径转换为UE标准的资源路径;
+
+    :UObjectGlobals 的 FindObject;
+
+    :StaticFindObject
+    从软引用的方法加载资产,下一步肯定为yes;
+    if(不存在指定的包对象) then (yes)
+
+        group 解析资产路径
+
+        :ResolveName
+        解析资产名称,确定资产最外层的包名;
+        
+        if(当前资产为最外层包) then (yes)
+            :直接返回true;
+        else (no)
+            :使用FindObject查找最外层包;
+            if(未在内存找到最外层包) then (yes)
+                if(未在全局找到资源) then (yes)
+                    :返回查找失败;
+                endif
+            endif
+        endif
+        :资产路径解析完成
+        找到资源对象所属的包对象,确定资源对象的短名称
+        :继续查找资源;
+
+        end group
+    else (no)
+        :UE的资源路径转换为简单的资产全路径;
+    endif
+
+    :StaticFindObjectFast;
+    :StaticFindObjectFastInternal;
+    #pink:FUObjectHashTables::Get()
+    这里会获取到所有已加载的资产信息？;
+    :StaticFindObjectFastInternalThreadSafe;
+
+    if(不存在指定的包对象) then (yes)
+        :在ThreadHash的HashOuter表中查找资源;
+        :若当前包中未找到资源,则在外层的包中查找;
+    else (no)
+        :在hreadHash的总的Hash表中查找资源;
+    endif
+
+
+    :若找到的资源是资产重定向器
+    根据重定向器找到真正的资源;
+
+    if(资源处于PendingKill状态) then (yes)
+        :放弃查找到的结果;
+    endif
+endif
+label FindOver
+:资源对象在内存查找完成;
+
+if(找到资源)
+:找到时直接返回;
+stop
+else(未找到时从硬盘查找)
+
+if(当前资源为子对象) then (yes)
+    :找到资产包最外层父对象
+    父对象加载完成后,在内存中查找子对象;
+endif
+
+:StaticLoadObject
+开始加载对象;
+:StaticLoadObjectInternal;
+
+:ResolveName
+找到对象对应的资产包;
+
+:LoadPackage;
+:LoadPackageInternal;
+
+:LoadPackageAsync
+开始异步加载Package;
+:FAsyncLoadingThread::LoadPackage;
+:QueuePackage
+将请求加载任务加入队列;
+
+
+:FlushAsyncLoading
+阻塞等待Package加载完成;
+:FAsyncLoadingThread::FlushLoading;
+
+group 开始资产加载流程
+
+:FAsyncLoadingThread::TickAsyncLoading;
+:FAsyncLoadingThread::TickAsyncThread;
+:FAsyncLoadingThread::TickAsyncThread;
+:FAsyncLoadingThread::ProcessAsyncLoading;
+
+end group
+
+
+:若找到的资源是资产重定向器
+根据重定向器找到真正的资源;
+stop
+
+@enduml
