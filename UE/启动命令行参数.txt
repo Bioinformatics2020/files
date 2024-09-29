@@ -15,7 +15,10 @@
 //启动log面板
 -log 
 //窗口模式运行，指定窗口大小
--ResX=400 -ResY=300 -windowed
+-ResX=400 -ResY=300 -windowed -fullscreen
+
+//指定log级别
+-LogCmds="Global Error,LogHotUpdateTool Log"
 
 //传入控制台参数
 -ExecCmds="t.MaxFPS 30,stat fps" 使用","分割命令，其它用法参考以下源码
